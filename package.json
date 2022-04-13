@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@octokit/core": "^3.5.1",
 		"crypto-js": "^4.1.1",
+		"i": "^0.3.7",
 		"js-base64": "^3.7.2",
 		"standard-version": "^9.3.2"
 	}

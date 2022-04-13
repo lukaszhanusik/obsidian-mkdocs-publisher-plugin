@@ -16,6 +16,28 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
 	return Base64.btoa(binary);
 }
 
+function getCategory(app: App, file: TFile, settings: mkdocsPublicationSettings) {
+	const fileCache = app.metadataCache.getFileCache(file);
+	const meta = fileCache?.frontmatter;
+	let category = settings.categoryDefault;
+	const categoryKey = settings.categoryKey
+	if (category == '/') {
+		category = '';
+	}
+	if (meta == undefined || meta[categoryKey] == undefined) {
+		return category;
+	}
+	if (!meta[categoryKey]) {
+		return 'hidden'
+	}
+	category = meta[categoryKey];
+	if (!category.endsWith('/') && category != '') {
+		category += '/';
+	}
+	return category
+
+}
+
 function disablePublish(app: App, settings: mkdocsPublicationSettings, file:TFile) {
 	const fileCache = app.metadataCache.getFileCache(file);
 	const meta = fileCache?.frontmatter;
@@ -40,4 +62,4 @@ function generateBlobHash(content: string){
 	return sha1(gitBlob).toString();
 }
 
-export { arrayBufferToBase64, disablePublish, generateBlobHash};
+export { arrayBufferToBase64, disablePublish, generateBlobHash, getCategory};

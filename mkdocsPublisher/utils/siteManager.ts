@@ -1,7 +1,7 @@
 // Credits : https://github.com/oleeskild/obsidian-digital-garden
 
 import {mkdocsPublicationSettings} from "../settings";
-import {MetadataCache, TFile} from "obsidian";
+import {MetadataCache} from "obsidian";
 import { Octokit } from "@octokit/core";
 
 export interface ISiteManager {

@@ -1,4 +1,4 @@
-import {Notice, Plugin, TFile} from 'obsidian';
+import {Notice, Plugin, addIcon, TFile } from 'obsidian';
 import {
 	mkdocsSettingsTab,
 	mkdocsPublicationSettings,
@@ -7,14 +7,22 @@ import {
 import {ShareStatusBar} from "./utils/status_bar";
 import MkdocsPublish from "./utils/publication";
 import {disablePublish} from './utils/utils'
-
+import { seedling } from './constants';
+import {PublishModal} from "./modals";
+import StatusManager from "./utils/statusManager";
+import SiteManager from "./utils/siteManager";
 
 export default class mkdocsPublication extends Plugin {
 	settings: mkdocsPublicationSettings;
+	publishModal: PublishModal;
 
 	async onload() {
 		console.log('Mkdocs Publication loaded');
 		await this.loadSettings();
+		addIcon('digital-garden-icon', 'seedling');
+		this.addRibbonIcon("digital-garden-icon", "Digital Garden Publication Center", async () => {
+			this.openPublishModal();
+		});
 		this.addSettingTab(new mkdocsSettingsTab(this.app, this));
 
 		this.registerEvent(
@@ -122,6 +130,23 @@ export default class mkdocsPublication extends Plugin {
 				}
 			},
 		});
+		this.addCommand({
+			id: 'dg-open-publish-modal',
+			name: 'Open Publication Center',
+			callback: async () => {
+				this.openPublishModal();
+			}
+		});
+	}
+	openPublishModal() {
+		if (!this.publishModal) {
+			const siteManager = new SiteManager(this.settings, this.app.metadataCache);
+			const publisher = new MkdocsPublish(this.app.vault, this.app.metadataCache, this.settings);
+			const publishStatusManager = new StatusManager(siteManager, publisher, this.app.vault, this.app, this.settings);
+			// @ts-ignore
+			this.publishModal = new PublishModal(this.app, publishStatusManager, publisher, this.settings);
+		}
+		this.publishModal.open();
 	}
 	onunload() {
 		console.log('Mkdocs Publication unloaded');

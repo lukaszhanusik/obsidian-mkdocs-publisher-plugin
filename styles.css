@@ -1,1 +1,19 @@
 /* No need here */
+.mkdocs-status-view ul {
+    list-style-type: none;
+    position: relative;
+    margin-left: 5px;
+    margin-top: 0;
+    max-height: 250px;
+    overflow: auto;
+}
+
+.mkdocs-status-view h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.mkdocs-status-view .collapsable {
+    cursor: pointer;
+    margin-left: 10px;
+}
