@@ -165,4 +165,19 @@ export default class MkdocsPublish {
 			ref: 'main'
 		});
 	}
+
+	async updateSettings() {
+		let newSettings = `index_key=${this.settings.indexFolder}
+		default_blog=${this.settings.categoryDefault}
+		category_key=${this.settings.categoryKey}
+		`
+		newSettings=newSettings.replace(/\t/gi, '').trim();
+		try {
+			await this.uploadText('.github-actions', newSettings, '.github-actions');
+			return true
+		}
+		catch {
+			return false
+		}
+	}
 }

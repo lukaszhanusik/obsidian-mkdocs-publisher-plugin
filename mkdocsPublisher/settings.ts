@@ -10,6 +10,7 @@ export interface mkdocsPublicationSettings {
 	fileMenu: boolean;
 	categoryKey: string;
 	categoryDefault: string;
+	indexFolder: string;
 }
 
 export const DEFAULT_SETTINGS: mkdocsPublicationSettings = {
@@ -20,7 +21,8 @@ export const DEFAULT_SETTINGS: mkdocsPublicationSettings = {
 	ExcludedFolder: "",
 	fileMenu: false,
 	categoryKey: "category",
-	categoryDefault: 'notes',
+	categoryDefault: "notes",
+	indexFolder: "(i)"
 };
 
 export class mkdocsSettingsTab extends PluginSettingTab {
@@ -77,7 +79,7 @@ export class mkdocsSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
-		containerEl.createEl("h3", {text: "Settings for sharing"});
+		containerEl.createEl("h3", {text: "Sharing Settings"});
 		new Setting(containerEl)
 			.setName("Share Key")
 			.setDesc("The frontmatter key to publish your file on the website.")
@@ -90,37 +92,6 @@ export class mkdocsSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
-
-		containerEl.createEl("h4", {text: "Settings for categories"});
-		containerEl.createEl("p", {text: "Theses settings needs to be the same on your .github-actions file."});
-
-		new Setting(containerEl)
-			.setName("Category Key")
-			.setDesc("The frontmatter key to set the category of your file.")
-			.addText((text) =>
-				text
-					.setPlaceholder("category")
-					.setValue(this.plugin.settings.categoryKey)
-					.onChange(async(value)=>{
-						this.plugin.settings.categoryKey = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Default category")
-			.setDesc("The default category of your file : it's the default folder where your files will be published.")
-			.addText((text) =>
-				text
-					.setPlaceholder("notes")
-					.setValue(this.plugin.settings.categoryDefault)
-					.onChange(async(value)=>{
-						this.plugin.settings.categoryDefault = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-
 		new Setting(containerEl)
 			.setName("Excluded Folder")
 			.setDesc("Never publish file in these folder, regardless of the share key. Separate folder name by comma.")
@@ -144,6 +115,60 @@ export class mkdocsSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		containerEl.createEl("h3", {text: "OBS2MK settings"});
+
+		new Setting(containerEl)
+			.setName("Category Key")
+			.setDesc("The frontmatter key to set the category of your file.")
+			.addText((text) =>
+				text
+					.setPlaceholder("category")
+					.setValue(this.plugin.settings.categoryKey)
+					.onChange(async(value)=>{
+						this.plugin.settings.categoryKey = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Default category")
+			.setDesc("The default folder where you note will be published.")
+			.addText((text) =>
+				text
+					.setPlaceholder("Notes")
+					.setValue(this.plugin.settings.categoryDefault)
+					.onChange(async(value)=>{
+						this.plugin.settings.categoryDefault = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		const desc_index=document.createDocumentFragment();
+		desc_index.createEl("span", null, (span)=>{
+			span.innerText="The index key is used for the citation of the folder note. See ";
+			span.createEl("a", null, (link)=> {
+				link.innerText = "documentation";
+				link.href = "https://mara-li.github.io/mkdocs_obsidian_template/documentation/blog%20customization/#folder-note";
+			})
+			span.innerText=" for more information.";
+		});
+
+		new Setting(containerEl)
+			.setName("Index Folder Note Key")
+			.setDesc(desc_index)
+			.addText((text) =>
+				text
+					.setPlaceholder("(i)")
+					.setValue(this.plugin.settings.indexFolder)
+					.onChange(async(value)=>{
+						this.plugin.settings.indexFolder = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+
+
 
 	}
 }
