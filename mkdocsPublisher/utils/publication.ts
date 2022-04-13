@@ -3,7 +3,7 @@
 import {MetadataCache, Vault, TFile, Notice } from 'obsidian';
 import {
 	mkdocsPublicationSettings,
-} from "./settings";
+} from "../settings";
 import { Octokit } from "@octokit/core";
 import {arrayBufferToBase64} from "./utils";
 import { Base64 } from "js-base64";
@@ -126,7 +126,9 @@ export default class MkdocsPublish {
 				repo: this.settings.githubRepo,
 				path
 			});
+			// @ts-ignore
 			if (response.status === 200 && response.data.type === "file") {
+				// @ts-ignore
 				payload.sha = response.data.sha;
 			}
 		} catch (e) {

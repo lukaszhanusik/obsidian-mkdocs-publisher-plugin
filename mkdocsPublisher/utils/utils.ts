@@ -3,7 +3,8 @@ import {
 	TFile
 } from 'obsidian';
 import { Base64 } from "js-base64";
-import {mkdocsPublicationSettings} from "./settings";
+import sha1 from "crypto-js/sha1";
+import {mkdocsPublicationSettings} from "../settings";
 
 function arrayBufferToBase64(buffer: ArrayBuffer) {
 	let binary = "";
@@ -31,4 +32,12 @@ function disablePublish(app: App, settings: mkdocsPublicationSettings, file:TFil
 	return meta[settings.shareKey];
 }
 
-export { arrayBufferToBase64, disablePublish};
+function generateBlobHash(content: string){
+	const byteLength = (new TextEncoder().encode(content)).byteLength;
+	const header = `blob ${byteLength}\0`;
+	const gitBlob = header + content;
+
+	return sha1(gitBlob).toString();
+}
+
+export { arrayBufferToBase64, disablePublish, generateBlobHash};

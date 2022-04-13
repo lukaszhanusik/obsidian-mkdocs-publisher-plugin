@@ -8,6 +8,8 @@ export interface mkdocsPublicationSettings {
 	shareKey: string;
 	ExcludedFolder: string;
 	fileMenu: boolean;
+	categoryKey: string;
+	categoryDefault: string;
 }
 
 export const DEFAULT_SETTINGS: mkdocsPublicationSettings = {
@@ -17,6 +19,8 @@ export const DEFAULT_SETTINGS: mkdocsPublicationSettings = {
 	shareKey: "share",
 	ExcludedFolder: "",
 	fileMenu: false,
+	categoryKey: "category",
+	categoryDefault: 'notes',
 };
 
 export class mkdocsSettingsTab extends PluginSettingTab {
@@ -86,6 +90,37 @@ export class mkdocsSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		containerEl.createEl("h4", {text: "Settings for categories"});
+		containerEl.createEl("p", {text: "Theses settings needs to be the same on your .github-actions file."});
+
+		new Setting(containerEl)
+			.setName("Category Key")
+			.setDesc("The frontmatter key to set the category of your file.")
+			.addText((text) =>
+				text
+					.setPlaceholder("category")
+					.setValue(this.plugin.settings.categoryKey)
+					.onChange(async(value)=>{
+						this.plugin.settings.categoryKey = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Default category")
+			.setDesc("The default category of your file : it's the default folder where your files will be published.")
+			.addText((text) =>
+				text
+					.setPlaceholder("notes")
+					.setValue(this.plugin.settings.categoryDefault)
+					.onChange(async(value)=>{
+						this.plugin.settings.categoryDefault = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+
 		new Setting(containerEl)
 			.setName("Excluded Folder")
 			.setDesc("Never publish file in these folder, regardless of the share key. Separate folder name by comma.")
